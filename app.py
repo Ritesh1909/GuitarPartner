@@ -1,7 +1,7 @@
 import random
 import streamlit as st
 
-# Chord Dictionaries
+# Chord Dictionaries (same as before)
 power_chords = {
     "C": ["C5", "D5", "E5", "F5", "G5", "A5", "B5"],
     "G": ["G5", "A5", "B5", "C5", "D5", "E5", "F#5"],
@@ -42,7 +42,7 @@ dim_aug_chords = {
     "B": ["Bdim", "Baug", "Bdim7"]
 }
 
-# Build Transition Matrix
+
 def build_transition_matrix(chord_list):
     matrix = {}
     for chord in chord_list:
@@ -51,10 +51,9 @@ def build_transition_matrix(chord_list):
         matrix[chord] = {ch: 1 / len(next_chords) for ch in next_chords}
     return matrix
 
-# Generate Chord Progression
+
 def generate_chord_progression(
     key: str,
-    mode: str,
     num_chords: int,
     training_type: str,
     difficulty_level: str = None,
@@ -64,7 +63,6 @@ def generate_chord_progression(
     Generates a chord progression based on inputs.
 
     :param key: The tonal center (e.g., "C", "G", etc.).
-    :param mode: Mode (e.g., "Major", "Minor").
     :param num_chords: Number of chords in the progression.
     :param training_type: Either "difficulty" or "chord family".
     :param difficulty_level: If training_type == "difficulty", one of ["Beginner", "Intermediate", "Expert"].
@@ -120,13 +118,33 @@ def generate_chord_progression(
 
     return progression
 
-# Streamlit UI
+
 if __name__ == "__main__":
     st.title("🎸 Guitar Chord Progression Generator")
 
-    # The user picks ONE key (for both difficulty or chord family)
+    # Brief description of chord families
+    st.write("""
+    **Chord Families Overview**  
+    - **Power Chords**: Often used in rock and metal music; typically just the root and the fifth.  
+    - **Seventh Chords Major**: Includes major seventh, dominant seventh, and related diatonic seventh chords.  
+    - **Extended Chords**: Adds color tones such as 9th, 11th, 13th, etc.  
+    - **Diminished & Augmented Chords**: Adds tension or unique color with diminished and augmented tones.  
+    """)
+
+    # Brief info about these keys
+    st.write("""
+    **Available Keys**  
+    - **C**: Often a go-to for beginners; no sharps or flats in its major scale.  
+    - **G**: Popular key with just one sharp (F#) in its major scale.  
+    - **D**: Two sharps (F#, C#); common for guitar-based music.  
+    - **A**: Three sharps (F#, C#, G#); nicely sits on guitar, easy to finger.  
+    - **E**: Four sharps (F#, C#, G#, D#); also very guitar-friendly.  
+    - **F**: One flat (Bb); a favorite in jazz and ballads.  
+    - **B**: Five sharps (F#, C#, G#, D#, A#); can feel bright and vibrant.  
+    """)
+
+    # The user picks ONE key
     key = st.selectbox("Select Key:", ["C", "G", "D", "A", "E", "F", "B"])
-    mode = st.selectbox("Select Mode:", ["Major", "Minor"])
     num_chords = st.slider("Number of Chords", 4, 16, 8)
 
     training_type = st.radio("Training Type", ["difficulty", "chord family"])
@@ -156,7 +174,6 @@ if __name__ == "__main__":
         try:
             progression = generate_chord_progression(
                 key=key,
-                mode=mode,
                 num_chords=num_chords,
                 training_type=training_type,
                 difficulty_level=difficulty_level,
